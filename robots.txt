@@ -1,0 +1,3 @@
+# Peržiūra: neindeksuoti. Galutinė versija: python build.py --final
+User-agent: *
+Disallow: /
