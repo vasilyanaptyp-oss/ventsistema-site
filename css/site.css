@@ -338,3 +338,13 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .req-line a{display:inline-flex;align-items:center;min-height:44px;color:var(--petrol);text-decoration:none;font-weight:500}
 .foot-bot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px}
 @media (min-width:760px){.foot-top{grid-template-columns:1fr auto;align-items:start}}
+
+/* 23.09.2026: logotipas (kliento WordArt), 5-a kortelė per visą plotį, blokas „Apie įmonę“ */
+.brand-logo{display:block;height:22px;width:auto}
+@media (max-width:479px){.brand-logo{height:18px}}
+@media (min-width:760px){.cards>.card:last-child:nth-child(odd){grid-column:1/-1}}
+.apie{background:var(--white);border:1px solid var(--line-2);border-radius:var(--r);padding:28px 24px;max-width:52rem}
+.apie-logo{display:block;height:32px;width:auto;max-width:100%;margin:0 0 18px}
+.apie-lead{font-size:1.125rem;margin:0 0 14px}
+.apie-q{margin:0 0 14px;padding:2px 0 2px 16px;border-left:3px solid var(--aqua);color:var(--ink-2);font-style:italic}
+.apie-q p{margin:0}
