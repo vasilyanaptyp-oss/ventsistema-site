@@ -81,7 +81,7 @@
     var webgl2 = function () {
       try {
         if (!window.WebGL2RenderingContext) return false;
-        var g = document.createElement('canvas').getContext('webgl2');
+        var g = document.createElement('canvas').getContext('webgl2', { failIfMajorPerformanceCaveat: true }); /* be programinio (CPU) atvaizdavimo */
         if (!g) return false;
         var x = g.getExtension('WEBGL_lose_context'); if (x) x.loseContext();
         return true;
