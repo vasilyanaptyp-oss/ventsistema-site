@@ -87,7 +87,8 @@
         return true;
       } catch (e) { return false; }
     };
-    var want3d = !reduce && bigScreen && strong && !slowNet && webgl2();
+    /* 23.09: gyvas 3D ir telefonuose, jei įrenginys pajėgus (tikra vaizdo plokštė, ≥4 branduoliai/GB, ne lėtas tinklas) */
+    var want3d = !reduce && strong && !slowNet && webgl2();
     window.VSMODE = want3d ? '3d' : 'svg';
     if (!want3d) return;
     var dynImport = function (u) { return new Function('u', 'return import(u)')(u); };
@@ -103,7 +104,8 @@
       var o = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { o.disconnect(); load3d(); } });
       o.observe(box);
     };
-    if (document.readyState === 'complete') setTimeout(whenVisible, 60); else window.addEventListener('load', function () { setTimeout(whenVisible, 60); });
+    var delay = bigScreen ? 60 : 400; /* telefone 3D pradeda krautis šiek tiek vėliau, kad nesikirstų su pirmu ekranu */
+    if (document.readyState === 'complete') setTimeout(whenVisible, delay); else window.addEventListener('load', function () { setTimeout(whenVisible, delay); });
   });
 
   /* ---------- 3. Kelionė: oro paketas keliauja ortakiais pagal slinkimą ---------- */
