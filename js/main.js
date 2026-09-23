@@ -36,12 +36,16 @@
         return true;
       });
     };
-    var ticking = false;
+    var ticking = false, idleT = 0;
     var onScroll = function () {
-      if (ticking || !pending.length) return;
+      if (!pending.length) return;
+      /* atsarginė patikra laikmačiu: jei kadrai vėluoja (silpnas įrenginys, fone), turinys vis tiek atsiskleidžia sustojus slinkti */
+      clearTimeout(idleT); idleT = setTimeout(sweep, 140);
+      if (ticking) return;
       ticking = true;
       window.requestAnimationFrame(function () { ticking = false; sweep(); });
     };
+    window.addEventListener('scrollend', sweep);
     if ('IntersectionObserver' in window) {
       io = new IntersectionObserver(function (es) {
         for (var i = 0; i < es.length; i++) { if (es[i].isIntersecting || es[i].boundingClientRect.top < 0) { sweep(); return; } }
@@ -73,7 +77,16 @@
     var bigScreen = window.matchMedia('(min-width: 900px) and (any-pointer: fine)').matches;
     var strong = !(nav.deviceMemory && nav.deviceMemory < 4) && !(nav.hardwareConcurrency && nav.hardwareConcurrency < 4);
     var slowNet = !!conn.saveData || /(^|-)(2g|3g)$/.test(conn.effectiveType || '');
-    var webgl2 = function () { try { var c = document.createElement('canvas'); return !!(window.WebGL2RenderingContext && c.getContext('webgl2')); } catch (e) { return false; } };
+    /* bandomasis kontekstas iškart atlaisvinamas, kad neliktų antro WebGL konteksto šalia scenos */
+    var webgl2 = function () {
+      try {
+        if (!window.WebGL2RenderingContext) return false;
+        var g = document.createElement('canvas').getContext('webgl2');
+        if (!g) return false;
+        var x = g.getExtension('WEBGL_lose_context'); if (x) x.loseContext();
+        return true;
+      } catch (e) { return false; }
+    };
     var want3d = !reduce && bigScreen && strong && !slowNet && webgl2();
     window.VSMODE = want3d ? '3d' : 'svg';
     if (!want3d) return;
