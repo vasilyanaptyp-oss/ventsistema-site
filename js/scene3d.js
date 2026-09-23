@@ -22,6 +22,7 @@ export async function init(box, opts = {}) {
   canvas.setAttribute('aria-hidden', 'true');
   box.appendChild(canvas);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.debug.checkShaderErrors = false; /* be sinchroninių šeiderių žurnalo užklausų: greičiau ir be triukšmo konsolėje */
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -167,6 +168,9 @@ export async function init(box, opts = {}) {
   const stop = () => { running = false; if (raf) cancelAnimationFrame(raf); raf = 0; };
   new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible && !document.hidden) start(); else stop(); }, { threshold: 0.05 }).observe(box);
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else if (visible) start(); });
+  /* grįžus mygtuku „atgal“ (bfcache) ciklas paleidžiamas iš naujo, jei scena matoma */
+  window.addEventListener('pageshow', (e) => { if (e.persisted && visible && !document.hidden) start(); });
+  window.addEventListener('pagehide', () => stop());
   canvas.addEventListener('webglcontextlost', ev => { ev.preventDefault(); stop(); box.classList.remove('is3d'); });
 
   resize();
